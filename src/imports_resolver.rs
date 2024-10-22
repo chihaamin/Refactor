@@ -78,7 +78,7 @@ fn collect_files(dir: &Path) -> Vec<(String, String)> {
         }
     }
 
-    files // Return the vector of files
+    files
 }
 
 fn extract_imports<'a>(path: &'a Path, module_name: &'a str) -> Option<Vec<String>> {
@@ -87,7 +87,6 @@ fn extract_imports<'a>(path: &'a Path, module_name: &'a str) -> Option<Vec<Strin
         r#"\bimport\s*\{{*(\s*([^}}]+)\s*|\w+)\}}*\s*from\s*\"{}\""#,
         regex::escape(module_name)
     );
-    // Create a regex object with the dynamic pattern
     let re = regex::Regex::new(&pattern).unwrap();
     let mut exports = None;
     if let Some(captures) = re.captures(&content) {
@@ -118,8 +117,8 @@ fn extract_imports<'a>(path: &'a Path, module_name: &'a str) -> Option<Vec<Strin
 
 fn refactor(content: &mut String, component: &str) -> String {
     // html
-    let target_tag = component; // Tag to replace
-    let replacement_tag = "div"; // Replacement tag
+    let target_tag = component; 
+    let replacement_tag = "div";
 
     let target_opening_tag = format!("<{}", target_tag);
     let target_closing_tag = format!("</{}>", target_tag);
