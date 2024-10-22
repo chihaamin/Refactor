@@ -14,7 +14,7 @@ static NODE_INDEX: &[&str; 2] = &["index.mjs", "index.js"];
 pub fn resolve_module<'a>(pack: &'a str, path: &'a Path) -> Result<Vec<String>, &'a str> {
     let file_content = fs::read_to_string("package.json").expect("Unable to read package.json");
 
-    // Parse the JSON into the PackageJson struct
+    // Parse the JSON
     let package_json: PackageJson =
         serde_json::from_str(&file_content).expect("Invalid JSON format");
     let binding = path.join("node_modules");
@@ -29,7 +29,7 @@ pub fn resolve_module<'a>(pack: &'a str, path: &'a Path) -> Result<Vec<String>, 
                 return Err("Module is not present in the package.json");
             } else {
                 let node_modules = &node_modules.join(Path::new(&pack.replace("/", "\\")));
-                let files_to_find = NODE_INDEX; // Add your target files here
+                let files_to_find = NODE_INDEX;
                 let files = search_files(node_modules, files_to_find);
                 for file_name in files.to_vec() {
                     let path = Path::new(&file_name);
@@ -43,7 +43,7 @@ pub fn resolve_module<'a>(pack: &'a str, path: &'a Path) -> Result<Vec<String>, 
                 return Err("Module is not present in the package.json");
             } else {
                 let node_modules = &node_modules.join(Path::new(&pack.replace("/", "\\")));
-                let files_to_find = NODE_INDEX; // Add your target files here
+                let files_to_find = NODE_INDEX;
                 let files = search_files(node_modules, files_to_find);
                 for file_name in files.to_vec() {
                     let path = Path::new(&file_name);
@@ -90,28 +90,24 @@ fn search_files<P: AsRef<Path>>(dir: P, target_files: &[&str]) -> Vec<PathBuf> {
 }
 
 fn read_and_extract_exports(path: &Path) -> Result<Vec<String>, std::io::Error> {
-    // Read the file content
+    
     let content = fs::read_to_string(path)?;
 
-    // Determine the file extension
     let extension = path.extension().and_then(|s| s.to_str());
 
-    // Extract exports based on the file type
     let mut exports = Vec::new();
     match extension {
         Some("mjs") => {
             for expo in extract_exports(&content) {
-                // Check if value is not already in vec1
                 if !exports.contains(&expo) {
-                    exports.push(expo); // Push value from vec2 into vec1
+                    exports.push(expo);
                 }
             }
         }
         Some("js") => {
             for expo in extract_exports(&content) {
-                // Check if value is not already in vec1
                 if !exports.contains(&expo) {
-                    exports.push(expo); // Push value from vec2 into vec1
+                    exports.push(expo);
                 }
             }
         }
